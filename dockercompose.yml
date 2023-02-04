@@ -1,0 +1,68 @@
+version: "3.8"
+
+services:
+  database:
+    image: mariadb:latest
+    restart: on-failure
+    volumes:
+      - database-volume:/var/lib/mysql
+    #ports: ### enable if u want to connect to the DB
+    #  - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root #CHANGE IT
+      MYSQL_DATABASE: pyplanet
+      MYSQL_USER: pyplanet #CHANGE IT
+      MYSQL_PASSWORD: pyplanet #CHANGE IT
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    networks:
+      - server-network
+  trackmania:
+    image: evotm/trackmania:latest
+    ports:
+      - 2350:2350/udp
+      - 2350:2350/tcp
+    environment:
+      MASTER_LOGIN: "" #setu here https://players.trackmania.com/server/dedicated 
+      MASTER_PASSWORD: ""
+      XMLRPC_ALLOWREMOTE: "True"
+      SERVER_NAME: "RMT TEST Docker V1"
+      PLAYERS_MAX: 50 
+      SPECTATORS_MAX: 10
+      #PLAYERS_PASSWORD: xxx
+      #SPECTATORS_PASSWORD: xxx
+    volumes:
+      - UserData:/server/UserData
+    networks:
+      - server-network
+  pyplanet:
+    build: .
+    depends_on:
+      - trackmania
+      - database
+    environment:
+      PYPLANET_OWNER: changeIt #if u don't know your ID use /clam *** with the code reported when starting pyplanet
+      DB_HOST: database #container name 
+      TM_HOST: trackmania #container name
+      DB_USER: pyplanet #same as MYSQL_USER
+      DB_USER_PASSWORD: pyplanet #same as MYSQL_PASSWORD
+    command: ./server/manage.py start
+    volumes:
+      - pyplanet:/pyplanet/server
+      - UserData:/pyplanet/server/UserData
+      - type: bind
+        source: ${PWD}/settings/apps.py
+        target: /pyplanet/server/settings/apps.py #add other app to this file
+      - type: bind
+        source: ${PWD}/settings/base.py
+        target: /pyplanet/server/settings/base.py #changes to allow run pyplanet inside docker
+    networks:
+      - server-network
+
+networks:
+  server-network:
+    driver: bridge
+volumes:
+  UserData:
+  database-volume:
+  pyplanet:
+    driver: local
