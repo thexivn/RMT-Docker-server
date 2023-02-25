@@ -45,7 +45,7 @@ services:
       TM_HOST: trackmania #container name
       DB_USER: pyplanet #same as MYSQL_USER
       DB_USER_PASSWORD: pyplanet #same as MYSQL_PASSWORD
-    command: ./server/manage.py start
+    command: sh -c "sleep 10s && ./server/manage.py start"
     volumes:
       - pyplanet:/pyplanet/server
       - UserData:/pyplanet/server/UserData
