@@ -7,5 +7,5 @@ Before run the server you need to change the secrets inside the `dockercompose.y
 
 
 ``` bash
-docker compose -f dockercompose.yml up
+docker compose -f docker-compose.yml up
 ```
