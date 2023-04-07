@@ -22,7 +22,7 @@ services:
       - 2350:2350/udp
       - 2350:2350/tcp
     environment:
-      MASTER_LOGIN: "changeIt" #setu here https://players.trackmania.com/server/dedicated 
+      MASTER_LOGIN: "changeIt" #set-up here https://www.trackmania.com/player/dedicated-servers
       MASTER_PASSWORD: "changeIt"
       XMLRPC_ALLOWREMOTE: "True"
       SERVER_NAME: "RMT TEST Docker V1"
